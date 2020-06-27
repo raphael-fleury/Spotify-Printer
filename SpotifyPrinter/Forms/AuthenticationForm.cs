@@ -18,21 +18,27 @@ namespace SpotifyPrinter
             InitializeComponent();
         }
 
+        private void AuthenticationForm_Shown(object sender, EventArgs e)
+        {
+            errorLabel.Text = "";
+            textBox.Text = "";
+        }
+
         private void authButton_Click(object sender, EventArgs e)
         {
             var client = new SpotifyClient(textBox.Text);
 
-            if (client == null)
-                AuthFail();
-            else
+            try
+            {
+                var testOperation = client.Playlists.Get("16wsvPYpJg1dmLhz0XTOmX");
+                Task.WaitAll(testOperation);
+
                 AuthSuccess();
+            }
+            catch { AuthFail(); }
         }
 
-        private void AuthFail()
-        {
-            label.ForeColor = Color.Red;
-            label.Text = "Fail.";
-        }
+        private void AuthFail() => errorLabel.Text = "Fail. ";
 
         private void AuthSuccess()
         {

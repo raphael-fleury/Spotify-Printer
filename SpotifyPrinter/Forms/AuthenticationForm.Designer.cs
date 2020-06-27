@@ -31,6 +31,7 @@
             this.textBox = new System.Windows.Forms.TextBox();
             this.authButton = new System.Windows.Forms.Button();
             this.label = new System.Windows.Forms.Label();
+            this.errorLabel = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // textBox
@@ -60,16 +61,27 @@
             this.label.TabIndex = 2;
             this.label.Text = "Insert the authentication code:";
             // 
+            // errorLabel
+            // 
+            this.errorLabel.AutoSize = true;
+            this.errorLabel.ForeColor = System.Drawing.Color.DarkRed;
+            this.errorLabel.Location = new System.Drawing.Point(12, 71);
+            this.errorLabel.Name = "errorLabel";
+            this.errorLabel.Size = new System.Drawing.Size(0, 13);
+            this.errorLabel.TabIndex = 3;
+            // 
             // AuthenticationForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(473, 102);
+            this.Controls.Add(this.errorLabel);
             this.Controls.Add(this.label);
             this.Controls.Add(this.authButton);
             this.Controls.Add(this.textBox);
             this.Name = "AuthenticationForm";
             this.Text = "Authentication";
+            this.Shown += new System.EventHandler(this.AuthenticationForm_Shown);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -80,6 +92,7 @@
         private System.Windows.Forms.TextBox textBox;
         private System.Windows.Forms.Button authButton;
         private System.Windows.Forms.Label label;
+        private System.Windows.Forms.Label errorLabel;
     }
 }
 
