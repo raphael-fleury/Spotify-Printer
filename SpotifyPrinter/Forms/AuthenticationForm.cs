@@ -1,10 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using SpotifyAPI.Web;
@@ -33,16 +27,17 @@ namespace SpotifyPrinter
                 var testOperation = client.Playlists.Get("16wsvPYpJg1dmLhz0XTOmX");
                 Task.WaitAll(testOperation);
 
-                AuthSuccess();
+                AuthSuccess(client);
             }
             catch { AuthFail(); }
         }
 
         private void AuthFail() => errorLabel.Text = "Fail. ";
 
-        private void AuthSuccess()
+        private void AuthSuccess(SpotifyClient client)
         {
             Hide();
+            Program.Client = client;
             var mainForm = new MainForm();
             mainForm.Closed += (s, args) => Close();
             mainForm.Show();

@@ -52,6 +52,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="UserControls\ActionsUserControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControls\ActionsUserControl.Designer.cs">
+      <DependentUpon>ActionsUserControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\AuthenticationForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -64,6 +70,12 @@
     <Compile Include="Forms\MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="UserControls\PlaylistsContainer.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControls\PlaylistsContainer.Designer.cs">
+      <DependentUpon>PlaylistsContainer.cs</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\PlaylistUserControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -72,11 +84,17 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="UserControls\ActionsUserControl.resx">
+      <DependentUpon>ActionsUserControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\AuthenticationForm.resx">
       <DependentUpon>AuthenticationForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControls\PlaylistsContainer.resx">
+      <DependentUpon>PlaylistsContainer.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UserControls\PlaylistUserControl.resx">
       <DependentUpon>PlaylistUserControl.cs</DependentUpon>

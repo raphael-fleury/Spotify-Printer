@@ -9,6 +9,8 @@ namespace SpotifyPrinter
 {
     static class Program
     {
+        public static SpotifyClient Client { get; set; }
+
         /// <summary>
         /// Ponto de entrada principal para o aplicativo.
         /// </summary>

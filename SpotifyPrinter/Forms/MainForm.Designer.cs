@@ -28,30 +28,56 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+            this.playlistInput = new System.Windows.Forms.TextBox();
+            this.playlistsContainer = new SpotifyPrinter.UserControls.PlaylistsContainer();
+            this.actionsUserControl1 = new SpotifyPrinter.Forms.ActionsUserControl();
             this.SuspendLayout();
             // 
-            // flowLayoutPanel1
+            // playlistInput
             // 
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(107, 86);
-            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(200, 100);
-            this.flowLayoutPanel1.TabIndex = 0;
+            this.playlistInput.Location = new System.Drawing.Point(14, 13);
+            this.playlistInput.Name = "playlistInput";
+            this.playlistInput.Size = new System.Drawing.Size(349, 20);
+            this.playlistInput.TabIndex = 2;
+            this.playlistInput.Text = "Insert playlist\'s URI here to add";
+            this.playlistInput.KeyDown += new System.Windows.Forms.KeyEventHandler(this.playlistInput_KeyDown);
+            // 
+            // playlistsContainer
+            // 
+            this.playlistsContainer.Location = new System.Drawing.Point(14, 47);
+            this.playlistsContainer.Name = "playlistsContainer";
+            this.playlistsContainer.Size = new System.Drawing.Size(349, 391);
+            this.playlistsContainer.TabIndex = 3;
+            // 
+            // actionsUserControl1
+            // 
+            this.actionsUserControl1.BackColor = System.Drawing.Color.DarkCyan;
+            this.actionsUserControl1.Dock = System.Windows.Forms.DockStyle.Right;
+            this.actionsUserControl1.Location = new System.Drawing.Point(368, 0);
+            this.actionsUserControl1.Name = "actionsUserControl1";
+            this.actionsUserControl1.Size = new System.Drawing.Size(200, 450);
+            this.actionsUserControl1.TabIndex = 4;
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(568, 450);
-            this.Controls.Add(this.flowLayoutPanel1);
+            this.Controls.Add(this.actionsUserControl1);
+            this.Controls.Add(this.playlistsContainer);
+            this.Controls.Add(this.playlistInput);
             this.Name = "MainForm";
-            this.Text = "MainForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.Text = "Spotify Printer";
+            this.Load += new System.EventHandler(this.MainForm_Load);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
         #endregion
-
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
+        private System.Windows.Forms.TextBox playlistInput;
+        private UserControls.PlaylistsContainer playlistsContainer;
+        private Forms.ActionsUserControl actionsUserControl1;
     }
 }
