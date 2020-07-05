@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace SpotifyPrinter.Forms
+namespace SpotifyPrinter.UserControls
 {
     public partial class ActionsUserControl : UserControl
     {
@@ -24,9 +24,8 @@ namespace SpotifyPrinter.Forms
 
         private void ActionsUserControl_Resize(object sender, EventArgs e)
         {
-            label.Location = new Point(Size.Width / 2 - label.Size.Width / 2, label.Location.Y);
-            toTxtButton.Location = new Point(Size.Width / 2 - toTxtButton.Size.Width / 2, toTxtButton.Location.Y);
-            toJsonButton.Location = new Point(Size.Width / 2 - toJsonButton.Size.Width / 2, toJsonButton.Location.Y);
+            foreach (Control control in Controls)
+                control.Location = new Point(Size.Width / 2 - control.Size.Width / 2, control.Location.Y);
         }
     }
 }

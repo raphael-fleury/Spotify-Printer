@@ -24,6 +24,15 @@ namespace SpotifyPrinter
             LoadPlaylists();
         }
 
+        private void MainForm_Resize(object sender, EventArgs e)
+        {
+            controlsBoard.Width = Width / 3;
+            playlistInput.Width = (int)Math.Round((Width - controlsBoard.Width) * .9);
+            
+            playlistsContainer.Width = playlistInput.Width;
+            playlistsContainer.Height = (int)Math.Round((Height - playlistInput.Height) * .9);
+        }
+
         private void LoadPlaylists()
         {
             string[] playlistsUri = { "4eLslb9s9PXmkr8mOgfrXF", "6mtC5TuWGII11896qYKvsb", "6mtC5TuWGII11896qYKvsb", "6mtC5TuWGII11896qYKvsb", "6mtC5TuWGII11896qYKvsb" };
@@ -39,7 +48,7 @@ namespace SpotifyPrinter
         {
             if (e.KeyCode == Keys.Enter)
             {
-                LoadPlaylists();
+                playlistsContainer.AddPlaylist(playlistInput.Text);
             }
         }
     }

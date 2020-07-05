@@ -1,4 +1,4 @@
-﻿namespace SpotifyPrinter.Forms
+﻿namespace SpotifyPrinter.UserControls
 {
     partial class ActionsUserControl
     {
@@ -55,7 +55,6 @@
             // 
             // label
             // 
-            this.label.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.label.AutoSize = true;
             this.label.Location = new System.Drawing.Point(83, 103);
             this.label.Name = "label";
@@ -71,6 +70,8 @@
             this.Controls.Add(this.label);
             this.Controls.Add(this.toJsonButton);
             this.Controls.Add(this.toTxtButton);
+            this.MaximumSize = new System.Drawing.Size(250, 0);
+            this.MinimumSize = new System.Drawing.Size(150, 400);
             this.Name = "ActionsUserControl";
             this.Size = new System.Drawing.Size(200, 400);
             this.Resize += new System.EventHandler(this.ActionsUserControl_Resize);
