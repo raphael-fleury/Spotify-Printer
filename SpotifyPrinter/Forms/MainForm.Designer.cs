@@ -49,6 +49,8 @@
             this.controlsBoard.BackColor = System.Drawing.Color.DarkCyan;
             this.controlsBoard.Dock = System.Windows.Forms.DockStyle.Right;
             this.controlsBoard.Location = new System.Drawing.Point(424, 0);
+            this.controlsBoard.MaximumSize = new System.Drawing.Size(250, 0);
+            this.controlsBoard.MinimumSize = new System.Drawing.Size(150, 400);
             this.controlsBoard.Name = "controlsBoard";
             this.controlsBoard.Size = new System.Drawing.Size(200, 441);
             this.controlsBoard.TabIndex = 4;
@@ -57,7 +59,7 @@
             // 
             this.playlistsContainer.Location = new System.Drawing.Point(14, 47);
             this.playlistsContainer.Name = "playlistsContainer";
-            this.playlistsContainer.Size = new System.Drawing.Size(349, 391);
+            this.playlistsContainer.Size = new System.Drawing.Size(396, 391);
             this.playlistsContainer.TabIndex = 3;
             // 
             // MainForm

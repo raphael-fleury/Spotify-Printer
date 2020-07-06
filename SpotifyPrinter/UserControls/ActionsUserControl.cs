@@ -20,6 +20,8 @@ namespace SpotifyPrinter.UserControls
         public void Refresh(List<SpotifyAPI.Web.FullPlaylist> playlists)
         {
             label.Text = playlists.Count + " playlists selected.";
+            toTxtButton.Enabled = playlists.Count > 0;
+            toJsonButton.Enabled = playlists.Count > 0;
         }
 
         private void ActionsUserControl_Resize(object sender, EventArgs e)

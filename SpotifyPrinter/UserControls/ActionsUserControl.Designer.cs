@@ -35,6 +35,8 @@
             // 
             // toTxtButton
             // 
+            this.toTxtButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.toTxtButton.AutoSize = true;
             this.toTxtButton.Location = new System.Drawing.Point(50, 132);
             this.toTxtButton.Name = "toTxtButton";
@@ -45,6 +47,8 @@
             // 
             // toJsonButton
             // 
+            this.toJsonButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.toJsonButton.AutoSize = true;
             this.toJsonButton.Location = new System.Drawing.Point(50, 163);
             this.toJsonButton.Name = "toJsonButton";
@@ -55,12 +59,14 @@
             // 
             // label
             // 
-            this.label.AutoSize = true;
-            this.label.Location = new System.Drawing.Point(83, 103);
+            this.label.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.label.Location = new System.Drawing.Point(5, 105);
             this.label.Name = "label";
-            this.label.Size = new System.Drawing.Size(35, 13);
+            this.label.Size = new System.Drawing.Size(190, 13);
             this.label.TabIndex = 2;
-            this.label.Text = "label1";
+            this.label.Text = "0 playlists selected";
+            this.label.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // ActionsUserControl
             // 
