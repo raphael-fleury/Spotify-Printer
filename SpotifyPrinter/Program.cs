@@ -20,7 +20,7 @@ namespace SpotifyPrinter
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            string token = "BQABOMehZkHvvhxk-ngEmkWFAUdfVukOT74pO3ccf-l6I8TsT7L-QsEjx7ksOpomF9lRRnR02eZC_b4SGzdMwAkLuyeP86CamSkVri3sLjLWHc_0PrUnkoXydUyGcpkSSDTJajMSM35Jybx2v0D0lBffF1moKYQ";
+            string token = "BQD3BzVmHT7EF18y94axex6OtQkmPBftXebFz94jsH5GXeyY4y0uwFN8ddGuocdtg-LfU7IxhGLNH9EI9HZG3Vj8DL_DpB2O9TxkQEofcYjp55hTGlTwPVs_byjM-QXkGkZcSqy9A4WCdT0mxUuK3GEM1cRs5jU";
             Application.Run(TryAuthenticate(token) ? (Form)new MainForm() : new AuthenticationForm());
         }
 

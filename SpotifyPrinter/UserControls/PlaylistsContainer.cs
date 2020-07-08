@@ -14,25 +14,45 @@ namespace SpotifyPrinter.UserControls
     public partial class PlaylistsContainer : UserControl
     {
         #region Properties
+        public static PlaylistsContainer Instance { get; private set; }
+
         public ActionsUserControl ControlsBoard { get; set; }
 
-        public List<FullPlaylist> selectedPlaylists =>
-            panel.Controls.Cast<PlaylistUserControl>()
+        public List<PlaylistUserControl> PlaylistControls =>
+            panel.Controls.Cast<PlaylistUserControl>().ToList();
+
+        public List<FullPlaylist> SelectedPlaylists =>
+            PlaylistControls
             .Where(c => c.IsSelected)
             .Select(c => c.Playlist)
             .ToList();
         #endregion
 
+        #region Constructor
         public PlaylistsContainer()
         {
             InitializeComponent();
+            Instance = this;
             panel_Resize(this, EventArgs.Empty);
         }
+        #endregion
 
         #region Public Operations
         public void Clear() => panel.Controls.Clear();
 
         public void AddPlaylist(string playlistUri)
+        {
+
+            LoadPlaylists();
+        }
+
+        public void RemovePlaylist(PlaylistUserControl control)
+        {
+
+            panel.Controls.Remove(control);
+        }
+
+        public void LoadPlaylist(string playlistUri)
         {
             FullPlaylist playlist;
             string uri = playlistUri.Replace("spotify:playlist:", "");
@@ -46,54 +66,39 @@ namespace SpotifyPrinter.UserControls
             panel.Controls.Add(display);
 
             display.Remove += RemovePlaylist;
-            display.Remove += (c) => ControlsBoard.Refresh(selectedPlaylists);
-            display.ToggleSelect += (control, value) => Display_Click(GetControlIndex(control));
+            display.Remove += (c) => ControlsBoard.Refresh(SelectedPlaylists);
+            display.ToggleSelect += Click_Playlist;
         }
 
-        public void RemovePlaylist(PlaylistUserControl control)
+        public void LoadPlaylists()
         {
-            panel.Controls.Remove(control);
+            string[] playlistsUri = { "4eLslb9s9PXmkr8mOgfrXF", "6mtC5TuWGII11896qYKvsb", "6mtC5TuWGII11896qYKvsb", "6mtC5TuWGII11896qYKvsb", "6mtC5TuWGII11896qYKvsb" };
+            Clear();
+
+            foreach (string uri in playlistsUri)
+            {
+                LoadPlaylist(uri);
+            }
         }
+        #endregion
 
         public int GetControlIndex(PlaylistUserControl control)
         {
             return panel.Controls.GetChildIndex(control);
         }
-        #endregion
 
-        private void Display_Click(int index)
+        private void Click_Playlist(PlaylistUserControl control, bool value)
         {
-            var list = panel.Controls.Cast<PlaylistUserControl>().ToList();
+            
 
-            if (ModifierKeys == Keys.Shift) // if shift is pressed
-            {
-                if (PlaylistUserControl.LastSelected == null)
-                    ((PlaylistUserControl)panel.Controls[0]).IsSelected = true;
-                        
-                int otherIndex = panel.Controls.GetChildIndex(PlaylistUserControl.LastSelected);
-                foreach (var control in list)
-                {
-                    int i = GetControlIndex(control);
-                    if ((i > otherIndex && i < index) || (i > index && i < otherIndex))
-                        control.IsSelected = true;
-                }
-            }
-            else if (ModifierKeys == Keys.None) // if control is not pressed
-            {
-                for (int i = 0; i < list.Count; i++)
-                {
-                    list[i].IsSelected = i == index;
-                }
-            }
-                
-            ControlsBoard.Refresh(selectedPlaylists);
+            ControlsBoard.Refresh(SelectedPlaylists);
         }
 
         private void panel_Resize(object sender, EventArgs e)
         {
-            panel.ColumnCount = Math.Max(panel.Width / 
+            panel.ColumnCount = Math.Max(panel.Width /
                 PlaylistUserControl.MinimumWidth, 1);
-            panel.RowCount = Math.Max(panel.Height / 
+            panel.RowCount = Math.Max(panel.Height /
                 PlaylistUserControl.MinimumHeight, 1);
         }
     }

@@ -16,7 +16,7 @@ namespace SpotifyPrinter
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            LoadPlaylists();
+            playlistsContainer.LoadPlaylists();
         }
 
         private void MainForm_Resize(object sender, EventArgs e)
@@ -26,17 +26,6 @@ namespace SpotifyPrinter
             
             playlistsContainer.Width = playlistInput.Width;
             playlistsContainer.Height = (int)Math.Round((Height - playlistInput.Height) * .9);
-        }
-
-        private void LoadPlaylists()
-        {
-            string[] playlistsUri = { "4eLslb9s9PXmkr8mOgfrXF", "6mtC5TuWGII11896qYKvsb", "6mtC5TuWGII11896qYKvsb", "6mtC5TuWGII11896qYKvsb", "6mtC5TuWGII11896qYKvsb" };
-            playlistsContainer.Clear();
-
-            foreach (string uri in playlistsUri)
-            {
-                playlistsContainer.AddPlaylist(uri);
-            }
         }
 
         private void playlistInput_KeyDown(object sender, KeyEventArgs e)

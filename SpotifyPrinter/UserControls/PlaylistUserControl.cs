@@ -2,6 +2,8 @@
 using System.Drawing;
 using SpotifyAPI.Web;
 using System;
+using System.Collections.Generic;
+using SpotifyPrinter.UserControls;
 
 namespace SpotifyPrinter
 {
@@ -19,18 +21,14 @@ namespace SpotifyPrinter
         public bool IsSelected
         {
             get { return BackColor == selectedColor; }
-            set
-            {
-                BackColor = value ? selectedColor : defaultColor;
-                LastSelected = value ? this : null;
-                toggleSelect.Invoke(this, value);
-            }
+            set { BackColor = value ? selectedColor : defaultColor; }
         }
         #endregion
 
         public PlaylistUserControl(FullPlaylist playlist)
         {
             InitializeComponent();
+
             defaultColor = BackColor;
             MinimumWidth = MinimumSize.Width;
             MinimumHeight = MinimumSize.Height;
@@ -74,7 +72,41 @@ namespace SpotifyPrinter
 
         private void PlaylistUserControl_Click(object sender, EventArgs e)
         {
-            IsSelected = !IsSelected || ModifierKeys == Keys.Shift;            
+            var container = PlaylistsContainer.Instance;
+            var controls = container.PlaylistControls;
+            int index = container.GetControlIndex(this);
+
+            if ((ModifierKeys & Keys.Shift) != 0)
+            {
+                if (LastSelected == null)
+                    controls[0].IsSelected = true;
+
+                int last = container.GetControlIndex(LastSelected);
+                Console.WriteLine(last);
+                for (int i = 0; i < controls.Count; i++)
+                {
+                    controls[i].IsSelected = (i >= last && i <= index) || (i >= index && i <= last);
+                }
+                LastSelected = controls[last];
+            }
+            else
+            {
+                LastSelected = this;
+
+                if ((ModifierKeys & Keys.Control) != 0)
+                {
+                    IsSelected = !IsSelected;
+                }                    
+                else
+                {
+                    for (int i = 0; i < controls.Count; i++)
+                    {
+                        controls[i].IsSelected = i == index;
+                    }
+                }                
+            }
+
+            toggleSelect.Invoke(this, IsSelected);
         }
     }
 }
