@@ -6,8 +6,6 @@ namespace SpotifyPrinter
 {
     public partial class MainForm : Form
     {
-        List<PlaylistUserControl> playlists = new List<PlaylistUserControl>();
-
         public MainForm()
         {
             InitializeComponent();
@@ -16,7 +14,15 @@ namespace SpotifyPrinter
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            playlistsContainer.LoadPlaylists();
+            playlistsContainer.Reload();
+        }
+
+        private void playlistInput_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                playlistsContainer.AddPlaylist(playlistInput.Text);
+            }
         }
 
         private void MainForm_Resize(object sender, EventArgs e)
@@ -26,14 +32,6 @@ namespace SpotifyPrinter
             
             playlistsContainer.Width = playlistInput.Width;
             playlistsContainer.Height = (int)Math.Round((Height - playlistInput.Height) * .9);
-        }
-
-        private void playlistInput_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Enter)
-            {
-                playlistsContainer.AddPlaylist(playlistInput.Text);
-            }
         }
     }
 }

@@ -63,6 +63,14 @@ namespace SpotifyPrinter
         }
         #endregion
 
+        public int CompareTo(PlaylistUserControl other)
+        {
+            if (Playlist.Name != other.Playlist.Name)
+                return Playlist.Name.CompareTo(other.Playlist.Name);
+            else
+                return Playlist.Uri.CompareTo(other.Playlist.Uri);
+        }
+
         private void PlaylistUserControl_Resize(object sender, EventArgs e)
         {
             picture.Width = picture.Height;

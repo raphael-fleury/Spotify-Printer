@@ -38,59 +38,48 @@ namespace SpotifyPrinter.UserControls
         #endregion
 
         #region Public Operations
-        public void Clear() => panel.Controls.Clear();
-
-        public void AddPlaylist(string playlistUri)
+        public void AddPlaylist(string uri)
         {
-
-            LoadPlaylists();
+            Playlists.Add(uri);
+            Reload();
         }
 
         public void RemovePlaylist(PlaylistUserControl control)
         {
-
+            Playlists.Remove(control.Playlist.Uri);
             panel.Controls.Remove(control);
         }
 
-        public void LoadPlaylist(string playlistUri)
+        public void Reload()
         {
-            FullPlaylist playlist;
-            string uri = playlistUri.Replace("spotify:playlist:", "");
+            panel.Controls.Clear();
 
-            try { playlist = Program.Client.Playlists.Get(uri).Result; }
-            catch { return; }
-
-            var display = new PlaylistUserControl(playlist);
-            display.Width = panel.Width / panel.ColumnCount;
-            display.Height = panel.Height / panel.RowCount;
-            panel.Controls.Add(display);
-
-            display.Remove += RemovePlaylist;
-            display.Remove += (c) => ControlsBoard.Refresh(SelectedPlaylists);
-            display.ToggleSelect += Click_Playlist;
-        }
-
-        public void LoadPlaylists()
-        {
-            string[] playlistsUri = { "4eLslb9s9PXmkr8mOgfrXF", "6mtC5TuWGII11896qYKvsb", "6mtC5TuWGII11896qYKvsb", "6mtC5TuWGII11896qYKvsb", "6mtC5TuWGII11896qYKvsb" };
-            Clear();
-
-            foreach (string uri in playlistsUri)
+            List<PlaylistUserControl> controls = new List<PlaylistUserControl>();
+            foreach (string uri in Playlists.List)
             {
-                LoadPlaylist(uri);
+                var display = new PlaylistUserControl(Playlists.Get(uri));
+                display.Width = panel.Width / panel.ColumnCount;
+                display.Height = panel.Height / panel.RowCount;
+
+                display.Remove += RemovePlaylist;
+                display.Remove += (c) => ControlsBoard.Refresh(SelectedPlaylists);
+                display.ToggleSelect += Click_Playlist;
+
+                controls.Add(display);
             }
+
+            controls.Sort((c1, c2) => c1.CompareTo(c2));
+            controls.ForEach(c => panel.Controls.Add(c));
         }
-        #endregion
 
         public int GetControlIndex(PlaylistUserControl control)
         {
             return panel.Controls.GetChildIndex(control);
         }
+        #endregion
 
         private void Click_Playlist(PlaylistUserControl control, bool value)
         {
-            
-
             ControlsBoard.Refresh(SelectedPlaylists);
         }
 

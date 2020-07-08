@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using SpotifyAPI.Web;
 
 namespace SpotifyPrinter
 {
@@ -23,7 +21,7 @@ namespace SpotifyPrinter
 
         private void authButton_Click(object sender, EventArgs e)
         {
-            if (Program.TryAuthenticate(textBox.Text))
+            if (Spotify.TryAuthenticate(textBox.Text))
                 AuthSuccess();
             else
                 AuthFail();
@@ -33,6 +31,9 @@ namespace SpotifyPrinter
 
         private void AuthSuccess()
         {
+            Properties.Settings.Default.Token = textBox.Text;
+            Properties.Settings.Default.Save();
+
             Hide();
             var mainForm = new MainForm();
             mainForm.Closed += (s, args) => Close();
