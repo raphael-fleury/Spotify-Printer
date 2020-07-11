@@ -13,7 +13,7 @@ namespace SpotifyPrinter
         public readonly FullPlaylist Playlist;
 
         private Color defaultColor;
-        private Color selectedColor = Color.Aqua;
+        private Color selectedColor = Color.Turquoise;
         #endregion
 
         #region Properties

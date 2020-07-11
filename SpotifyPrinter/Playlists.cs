@@ -44,23 +44,36 @@ namespace SpotifyPrinter
 
         public static void SaveToTXT()
         {
-            var path = ChoosePath();
-
-            if (!Directory.Exists(path))
-                return;
+            string path = Properties.Settings.Default.Folder;
 
             foreach (var playlist in PlaylistsContainer.Instance.SelectedPlaylists)
             {
                 string fileName = path + @"\" + $"{playlist.Name}.txt";
                 string content = playlist.Name + ", by: " + (playlist.Owner.DisplayName ?? playlist.Owner.Id) + "\n";
 
+                #region If File Already Exists
+                if (Directory.GetFiles(path).Contains(fileName))
+                {
+                    DialogResult result = MessageBox.Show(
+                        "File " + playlist.Name + ".txt already exists. Wants to override?",
+                        "File Already Exists",
+                        MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Warning
+                    );
+
+                    if (result == DialogResult.No)
+                        continue;
+                }
+                #endregion
+
                 foreach (var item in playlist.Tracks.Items)
                 {
                     FullTrack track = (FullTrack)item.Track;
 
                     //content += track.IsLocal ? "[Local] " : $"[Uri: {track.Uri}] ";
-                    content += $"\n[Added at {item.AddedAt.ToString()} by {item.AddedBy.Id}] ";
+                    content += $"\n[Added at {item.AddedAt} by {item.AddedBy.DisplayName ?? item.AddedBy.Id}] ";
 
+                    #region Artists
                     for (int i = 0; i < track.Artists.Count; i++)
                     {
                         if (!track.Name.Contains(track.Artists[i].Name))
@@ -72,6 +85,7 @@ namespace SpotifyPrinter
                     }
                     if (track.Artists.Where(a => a.Name != "").ToArray().Length > 0)
                         content += " - ";
+                    #endregion
 
                     content += track.Name;
                 }
@@ -80,13 +94,19 @@ namespace SpotifyPrinter
             }
         }
 
-        public static string ChoosePath()
+        public static string ChooseFolder()
         {
             using (var dialog = new FolderBrowserDialog())
             {
                 if (dialog.ShowDialog() == DialogResult.OK)
                 {
-                    return dialog.SelectedPath;
+                    if (Directory.Exists(dialog.SelectedPath))
+                    {
+                        Properties.Settings.Default.Folder = dialog.SelectedPath;
+                        Properties.Settings.Default.Save();
+
+                        return dialog.SelectedPath;
+                    }
                 }
             }
 

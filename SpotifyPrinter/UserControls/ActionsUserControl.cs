@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -12,6 +13,9 @@ namespace SpotifyPrinter.UserControls
         {
             InitializeComponent();
             Instance = this;
+            Reload();
+
+            chooseFolderButton.Click += (x, y) => Playlists.ChooseFolder();
             toTxtButton.Click += (x, y) => Playlists.SaveToTXT();
         }
 

@@ -29,8 +29,8 @@
         private void InitializeComponent()
         {
             this.playlistInput = new System.Windows.Forms.TextBox();
-            this.controlsBoard = new SpotifyPrinter.UserControls.ActionsUserControl();
             this.playlistsContainer = new SpotifyPrinter.UserControls.PlaylistsContainer();
+            this.controlsBoard = new SpotifyPrinter.UserControls.ActionsUserControl();
             this.SuspendLayout();
             // 
             // playlistInput
@@ -44,6 +44,13 @@
             this.playlistInput.Text = "Insert playlist\'s URI here to add";
             this.playlistInput.KeyDown += new System.Windows.Forms.KeyEventHandler(this.playlistInput_KeyDown);
             // 
+            // playlistsContainer
+            // 
+            this.playlistsContainer.Location = new System.Drawing.Point(14, 47);
+            this.playlistsContainer.Name = "playlistsContainer";
+            this.playlistsContainer.Size = new System.Drawing.Size(396, 391);
+            this.playlistsContainer.TabIndex = 3;
+            // 
             // controlsBoard
             // 
             this.controlsBoard.BackColor = System.Drawing.Color.DarkCyan;
@@ -54,13 +61,6 @@
             this.controlsBoard.Name = "controlsBoard";
             this.controlsBoard.Size = new System.Drawing.Size(200, 441);
             this.controlsBoard.TabIndex = 4;
-            // 
-            // playlistsContainer
-            // 
-            this.playlistsContainer.Location = new System.Drawing.Point(14, 47);
-            this.playlistsContainer.Name = "playlistsContainer";
-            this.playlistsContainer.Size = new System.Drawing.Size(396, 391);
-            this.playlistsContainer.TabIndex = 3;
             // 
             // MainForm
             // 
