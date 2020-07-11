@@ -1,19 +1,22 @@
 ﻿using System.Windows.Forms;
 using System.Drawing;
-using SpotifyAPI.Web;
 using System;
-using System.Collections.Generic;
 using SpotifyPrinter.UserControls;
+
+using FullPlaylist = SpotifyAPI.Web.FullPlaylist;
 
 namespace SpotifyPrinter
 {
     public partial class PlaylistUserControl : UserControl
     {
-        #region Properties
+        #region Fields
+        public readonly FullPlaylist Playlist;
+
         private Color defaultColor;
         private Color selectedColor = Color.Aqua;
+        #endregion
 
-        public readonly FullPlaylist Playlist;
+        #region Properties
         public static int MinimumWidth { get; private set; } = 350;
         public static int MinimumHeight { get; private set; } = 75;
         public static PlaylistUserControl LastSelected { get; private set; }
@@ -65,18 +68,13 @@ namespace SpotifyPrinter
 
         public int CompareTo(PlaylistUserControl other)
         {
-            if (Playlist.Name != other.Playlist.Name)
-                return Playlist.Name.CompareTo(other.Playlist.Name);
-            else
-                return Playlist.Uri.CompareTo(other.Playlist.Uri);
+            return Playlist.CompareTo(other.Playlist);
         }
 
         private void PlaylistUserControl_Resize(object sender, EventArgs e)
         {
             picture.Width = picture.Height;
         }
-
-        public static implicit operator FullPlaylist(PlaylistUserControl control) => control.Playlist;
 
         private void PlaylistUserControl_Click(object sender, EventArgs e)
         {
@@ -90,11 +88,12 @@ namespace SpotifyPrinter
                     controls[0].IsSelected = true;
 
                 int last = container.GetControlIndex(LastSelected);
-                Console.WriteLine(last);
+
                 for (int i = 0; i < controls.Count; i++)
                 {
                     controls[i].IsSelected = (i >= last && i <= index) || (i >= index && i <= last);
                 }
+
                 LastSelected = controls[last];
             }
             else

@@ -1,24 +1,23 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace SpotifyPrinter.UserControls
 {
     public partial class ActionsUserControl : UserControl
     {
+        public static ActionsUserControl Instance { get; private set; }
+
         public ActionsUserControl()
         {
-            InitializeComponent();            
+            InitializeComponent();
+            Instance = this;
+            toTxtButton.Click += (x, y) => Playlists.SaveToTXT();
         }
 
-        public void Refresh(List<SpotifyAPI.Web.FullPlaylist> playlists)
+        public void Reload()
         {
+            var playlists = PlaylistsContainer.Instance.SelectedPlaylists;
             label.Text = playlists.Count + " playlists selected.";
             toTxtButton.Enabled = playlists.Count > 0;
             toJsonButton.Enabled = playlists.Count > 0;

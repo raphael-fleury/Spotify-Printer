@@ -33,6 +33,7 @@
             // 
             // panel
             // 
+            this.panel.AutoScroll = true;
             this.panel.ColumnCount = 1;
             this.panel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.panel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));

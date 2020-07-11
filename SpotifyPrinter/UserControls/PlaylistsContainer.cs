@@ -16,8 +16,6 @@ namespace SpotifyPrinter.UserControls
         #region Properties
         public static PlaylistsContainer Instance { get; private set; }
 
-        public ActionsUserControl ControlsBoard { get; set; }
-
         public List<PlaylistUserControl> PlaylistControls =>
             panel.Controls.Cast<PlaylistUserControl>().ToList();
 
@@ -26,6 +24,9 @@ namespace SpotifyPrinter.UserControls
             .Where(c => c.IsSelected)
             .Select(c => c.Playlist)
             .ToList();
+
+        private ActionsUserControl controlsBoard => 
+            ActionsUserControl.Instance;
         #endregion
 
         #region Constructor
@@ -38,32 +39,19 @@ namespace SpotifyPrinter.UserControls
         #endregion
 
         #region Public Operations
-        public void AddPlaylist(string uri)
-        {
-            Playlists.Add(uri);
-            Reload();
-        }
-
-        public void RemovePlaylist(PlaylistUserControl control)
-        {
-            Playlists.Remove(control.Playlist.Uri);
-            panel.Controls.Remove(control);
-        }
-
         public void Reload()
         {
             panel.Controls.Clear();
 
             List<PlaylistUserControl> controls = new List<PlaylistUserControl>();
-            foreach (string uri in Playlists.List)
+            foreach (string uri in Playlists.Collection)
             {
                 var display = new PlaylistUserControl(Playlists.Get(uri));
                 display.Width = panel.Width / panel.ColumnCount;
-                display.Height = panel.Height / panel.RowCount;
+                display.Anchor = AnchorStyles.Top & AnchorStyles.Left;
 
                 display.Remove += RemovePlaylist;
-                display.Remove += (c) => ControlsBoard.Refresh(SelectedPlaylists);
-                display.ToggleSelect += Click_Playlist;
+                display.ToggleSelect += (x, y) => controlsBoard.Reload();
 
                 controls.Add(display);
             }
@@ -78,17 +66,19 @@ namespace SpotifyPrinter.UserControls
         }
         #endregion
 
-        private void Click_Playlist(PlaylistUserControl control, bool value)
+        private void RemovePlaylist(PlaylistUserControl control)
         {
-            ControlsBoard.Refresh(SelectedPlaylists);
+            Playlists.Remove(control.Playlist.Uri);
+            panel.Controls.Remove(control);
+            controlsBoard.Reload();
         }
 
         private void panel_Resize(object sender, EventArgs e)
         {
             panel.ColumnCount = Math.Max(panel.Width /
                 PlaylistUserControl.MinimumWidth, 1);
-            panel.RowCount = Math.Max(panel.Height /
-                PlaylistUserControl.MinimumHeight, 1);
+            panel.RowCount = (int)Math.Ceiling((double)panel.Controls.Count / panel.ColumnCount);
+            PlaylistControls.ForEach(c => c.Width = panel.Width / panel.ColumnCount);
         }
     }
 }

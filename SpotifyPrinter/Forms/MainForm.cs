@@ -1,16 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Windows.Forms;
 
 namespace SpotifyPrinter
 {
     public partial class MainForm : Form
     {
-        public MainForm()
-        {
-            InitializeComponent();
-            playlistsContainer.ControlsBoard = controlsBoard;
-        }
+        public MainForm() => InitializeComponent();
 
         private void MainForm_Load(object sender, EventArgs e)
         {
@@ -20,9 +15,7 @@ namespace SpotifyPrinter
         private void playlistInput_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
-            {
-                playlistsContainer.AddPlaylist(playlistInput.Text);
-            }
+                Playlists.Add(playlistInput.Text);
         }
 
         private void MainForm_Resize(object sender, EventArgs e)
