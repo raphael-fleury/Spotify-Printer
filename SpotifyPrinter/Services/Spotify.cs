@@ -1,7 +1,7 @@
 ﻿using SpotifyAPI.Web;
 using System.Threading.Tasks;
 
-namespace SpotifyPrinter
+namespace SpotifyPrinter.Services
 {
     public static class Spotify
     {

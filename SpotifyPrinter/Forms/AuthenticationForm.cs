@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SpotifyPrinter.Services;
+using System;
 using System.Windows.Forms;
 
 namespace SpotifyPrinter
@@ -35,9 +36,6 @@ namespace SpotifyPrinter
             Properties.Settings.Default.Save();
 
             Hide();
-            var mainForm = new MainForm();
-            mainForm.Closed += (s, args) => Close();
-            mainForm.Show();
         }
     }
 }

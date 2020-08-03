@@ -4,6 +4,7 @@ using System;
 using SpotifyPrinter.UserControls;
 
 using FullPlaylist = SpotifyAPI.Web.FullPlaylist;
+using SpotifyPrinter.Services;
 
 namespace SpotifyPrinter
 {
@@ -40,7 +41,7 @@ namespace SpotifyPrinter
             title.Text = playlist.Name;
             desc.Text = "URI: " + playlist.Uri.Replace("spotify:playlist:", "");
 
-            deleteButton.Click += (sender, e) => remove.Invoke(this);
+            deleteButton.Click += (sender, e) => Playlists.Remove(Playlist.Uri);
 
             #region Select
             title.Click += PlaylistUserControl_Click;
@@ -50,14 +51,7 @@ namespace SpotifyPrinter
         }
 
         #region Events
-        private event Action<PlaylistUserControl> remove;
         private event Action<PlaylistUserControl, bool> toggleSelect;
-
-        public event Action<PlaylistUserControl> Remove
-        {
-            add { remove += value; }
-            remove { remove -= value; }
-        }
 
         public event Action<PlaylistUserControl, bool> ToggleSelect
         {

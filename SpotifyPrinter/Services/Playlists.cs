@@ -7,10 +7,11 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 
-namespace SpotifyPrinter
+namespace SpotifyPrinter.Services
 {
     public static class Playlists
     {
+        #region Properties
         private static StringCollection collection =>
             Properties.Settings.Default.Playlists;
 
@@ -19,6 +20,41 @@ namespace SpotifyPrinter
 
         public static FullPlaylist Get(string uri) =>
             Spotify.Client.Playlists.Get(uri).Result;
+        #endregion
+
+        #region Events
+        private static Action<string> playlistAdded;
+        private static Action<string> playlistRemoved;
+
+        public static event Action<string> PlaylistAdded
+        {
+            add { playlistAdded += value; }
+            remove { playlistAdded -= value; }
+        }
+
+        public static event Action<string> PlaylistRemoved
+        {
+            add { playlistRemoved += value; }
+            remove { playlistRemoved -= value; }
+        }
+        #endregion
+
+        public static List<FullPlaylist> Load()
+        {
+            var list = new List<FullPlaylist>();
+            foreach(string uri in collection)
+            {
+                try { list.Add(Get(uri)); }
+                catch
+                {
+                    var dialog = new AuthenticationForm();
+                    if (dialog.ShowDialog() == DialogResult.Cancel)
+                        return list;
+                }
+            }
+
+            return list;
+        }
 
         public static void Add(string uri)
         {
@@ -27,19 +63,35 @@ namespace SpotifyPrinter
             if (Collection.Contains(uri))
                 return;
 
-            try { var playlist = Spotify.Client.Playlists.Get(uri).Result; }
-            catch { return; }
+            while (true)
+            {
+                try
+                {
+                    if (Get(uri) == null)
+                        return;
+                }
+                catch
+                {
+                    var dialog = new AuthenticationForm();
+                    if (dialog.ShowDialog() == DialogResult.Cancel)
+                        return;
+                    else
+                        break;
+                }
+            }            
 
             collection.Add(uri);
             Properties.Settings.Default.Save();
 
-            PlaylistsContainer.Instance.Reload();
+            playlistAdded?.Invoke(uri);
         }
 
         public static void Remove(string uri)
         {
             collection.Remove(uri);
             Properties.Settings.Default.Save();
+
+            playlistRemoved?.Invoke(uri);
         }
 
         public static void SaveToTXT()

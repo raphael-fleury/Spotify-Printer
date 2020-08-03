@@ -53,8 +53,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ExtensionMethods.cs" />
-    <Compile Include="Playlists.cs" />
-    <Compile Include="Spotify.cs" />
+    <Compile Include="Services\Playlists.cs" />
+    <Compile Include="Services\Spotify.cs" />
     <Compile Include="UserControls\ActionsUserControl.cs">
       <SubType>UserControl</SubType>
     </Compile>

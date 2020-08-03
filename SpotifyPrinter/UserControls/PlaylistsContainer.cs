@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using SpotifyAPI.Web;
+using SpotifyPrinter.Services;
 
 namespace SpotifyPrinter.UserControls
 {
@@ -35,6 +36,8 @@ namespace SpotifyPrinter.UserControls
             InitializeComponent();
             Instance = this;
             panel_Resize(this, EventArgs.Empty);
+            Playlists.PlaylistAdded += (p) => Reload();
+            Playlists.PlaylistRemoved += RemovePlaylist;
         }
         #endregion
 
@@ -44,13 +47,12 @@ namespace SpotifyPrinter.UserControls
             panel.Controls.Clear();
 
             List<PlaylistUserControl> controls = new List<PlaylistUserControl>();
-            foreach (string uri in Playlists.Collection)
+            foreach (var playlist in Playlists.Load())
             {
-                var display = new PlaylistUserControl(Playlists.Get(uri));
+                var display = new PlaylistUserControl(playlist);
                 display.Width = panel.Width / panel.ColumnCount;
                 display.Anchor = AnchorStyles.Top & AnchorStyles.Left;
 
-                display.Remove += RemovePlaylist;
                 display.ToggleSelect += (x, y) => controlsBoard.Reload();
 
                 controls.Add(display);
@@ -66,9 +68,9 @@ namespace SpotifyPrinter.UserControls
         }
         #endregion
 
-        private void RemovePlaylist(PlaylistUserControl control)
+        private void RemovePlaylist(string uri)
         {
-            Playlists.Remove(control.Playlist.Uri);
+            var control = panel.Controls.Cast<PlaylistUserControl>().First(c => c.Playlist.Uri == uri);
             panel.Controls.Remove(control);
             controlsBoard.Reload();
         }

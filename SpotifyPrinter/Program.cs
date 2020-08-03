@@ -15,7 +15,7 @@ namespace SpotifyPrinter
             Application.SetCompatibleTextRenderingDefault(false);
 
             string token = Properties.Settings.Default.Token;
-            Application.Run(Spotify.TryAuthenticate(token) ? (Form)new MainForm() : new AuthenticationForm());
+            Application.Run(new MainForm());
         }
     }
 }
