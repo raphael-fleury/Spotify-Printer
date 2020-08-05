@@ -53,6 +53,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ExtensionMethods.cs" />
+    <Compile Include="Services\Exceptions\ClientNotAuthenticatedException.cs" />
+    <Compile Include="Services\Exceptions\PlaylistException.cs" />
     <Compile Include="Services\Playlists.cs" />
     <Compile Include="Services\Spotify.cs" />
     <Compile Include="UserControls\ActionsUserControl.cs">

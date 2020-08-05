@@ -31,6 +31,9 @@
             this.playlistInput = new System.Windows.Forms.TextBox();
             this.playlistsContainer = new SpotifyPrinter.UserControls.PlaylistsContainer();
             this.controlsBoard = new SpotifyPrinter.UserControls.ActionsUserControl();
+            this.statusStrip = new System.Windows.Forms.StatusStrip();
+            this.statusLabel = new System.Windows.Forms.ToolStripStatusLabel();
+            this.statusStrip.SuspendLayout();
             this.SuspendLayout();
             // 
             // playlistInput
@@ -48,7 +51,7 @@
             // 
             this.playlistsContainer.Location = new System.Drawing.Point(14, 47);
             this.playlistsContainer.Name = "playlistsContainer";
-            this.playlistsContainer.Size = new System.Drawing.Size(396, 391);
+            this.playlistsContainer.Size = new System.Drawing.Size(396, 370);
             this.playlistsContainer.TabIndex = 3;
             // 
             // controlsBoard
@@ -62,11 +65,27 @@
             this.controlsBoard.Size = new System.Drawing.Size(200, 441);
             this.controlsBoard.TabIndex = 4;
             // 
+            // statusStrip
+            // 
+            this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.statusLabel});
+            this.statusStrip.Location = new System.Drawing.Point(0, 419);
+            this.statusStrip.Name = "statusStrip";
+            this.statusStrip.Size = new System.Drawing.Size(424, 22);
+            this.statusStrip.TabIndex = 5;
+            this.statusStrip.Text = "Ronaldo";
+            // 
+            // statusLabel
+            // 
+            this.statusLabel.Name = "statusLabel";
+            this.statusLabel.Size = new System.Drawing.Size(0, 17);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(624, 441);
+            this.Controls.Add(this.statusStrip);
             this.Controls.Add(this.controlsBoard);
             this.Controls.Add(this.playlistsContainer);
             this.Controls.Add(this.playlistInput);
@@ -76,6 +95,8 @@
             this.Text = "Spotify Printer";
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.Resize += new System.EventHandler(this.MainForm_Resize);
+            this.statusStrip.ResumeLayout(false);
+            this.statusStrip.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -85,5 +106,7 @@
         private System.Windows.Forms.TextBox playlistInput;
         private UserControls.PlaylistsContainer playlistsContainer;
         private UserControls.ActionsUserControl controlsBoard;
+        private System.Windows.Forms.StatusStrip statusStrip;
+        private System.Windows.Forms.ToolStripStatusLabel statusLabel;
     }
 }

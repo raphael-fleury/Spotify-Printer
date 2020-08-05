@@ -1,11 +1,26 @@
 ﻿using SpotifyAPI.Web;
 using System.Threading.Tasks;
+using SpotifyPrinter.Services.Exceptions;
 
 namespace SpotifyPrinter.Services
 {
     public static class Spotify
     {
-        public static SpotifyClient Client { get; set; }
+        #region Properties
+        private static SpotifyClient client;
+
+        public static SpotifyClient Client
+        { 
+            get
+            {
+                if (client == null)
+                    throw new ClientNotAuthenticatedException("Client not authenticated.");
+
+                return client;
+            }
+            private set { client = value; }
+        }
+        #endregion
 
         public static bool TryAuthenticate(string token)
         {

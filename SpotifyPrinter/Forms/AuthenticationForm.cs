@@ -35,6 +35,7 @@ namespace SpotifyPrinter
             Properties.Settings.Default.Token = textBox.Text;
             Properties.Settings.Default.Save();
 
+            DialogResult = DialogResult.OK;
             Hide();
         }
     }

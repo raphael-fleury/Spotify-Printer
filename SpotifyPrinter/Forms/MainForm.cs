@@ -16,7 +16,15 @@ namespace SpotifyPrinter
         private void playlistInput_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
-                Playlists.Add(playlistInput.Text);
+            {
+                try { Playlists.Add(playlistInput.Text); }
+
+                catch (Exception exc)
+                {
+                    statusLabel.Text = exc.Message; 
+                }
+            }
+                
         }
 
         private void MainForm_Resize(object sender, EventArgs e)

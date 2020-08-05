@@ -1,4 +1,5 @@
 ﻿using SpotifyAPI.Web;
+using SpotifyPrinter.Services.Exceptions;
 using SpotifyPrinter.UserControls;
 using System;
 using System.Collections.Generic;
@@ -16,10 +17,7 @@ namespace SpotifyPrinter.Services
             Properties.Settings.Default.Playlists;
 
         public static IReadOnlyList<string> Collection =>
-            collection.Cast<string>().ToList();
-
-        public static FullPlaylist Get(string uri) =>
-            Spotify.Client.Playlists.Get(uri).Result;
+            collection.Cast<string>().ToList();         
         #endregion
 
         #region Events
@@ -39,18 +37,40 @@ namespace SpotifyPrinter.Services
         }
         #endregion
 
+        public static FullPlaylist Get(string uri)
+        {
+            try { return Spotify.Client.Playlists.Get(uri).Result; }
+
+            catch (ClientNotAuthenticatedException e)
+            {
+                throw e;
+            }
+            catch
+            {
+                throw new PlaylistException("Playlist not found.");
+            }
+        }
+
         public static List<FullPlaylist> Load()
         {
             var list = new List<FullPlaylist>();
             foreach(string uri in collection)
             {
-                try { list.Add(Get(uri)); }
-                catch
+                while (true)
                 {
-                    var dialog = new AuthenticationForm();
-                    if (dialog.ShowDialog() == DialogResult.Cancel)
-                        return list;
-                }
+                    try 
+                    { 
+                        list.Add(Get(uri));
+                        break;
+                    }
+                    catch (ClientNotAuthenticatedException)
+                    {
+                        var dialog = new AuthenticationForm();
+                        if (dialog.ShowDialog() == DialogResult.Cancel)
+                            return list;
+                    }
+                    catch { break; }
+                }                
             }
 
             return list;
@@ -61,7 +81,7 @@ namespace SpotifyPrinter.Services
             uri = uri.Replace("spotify:playlist:", "");
 
             if (Collection.Contains(uri))
-                return;
+                throw new PlaylistException("Playlist already added.");
 
             while (true)
             {
@@ -69,16 +89,17 @@ namespace SpotifyPrinter.Services
                 {
                     if (Get(uri) == null)
                         return;
+                    else
+                        break;
                 }
-                catch
+                catch (ClientNotAuthenticatedException)
                 {
                     var dialog = new AuthenticationForm();
                     if (dialog.ShowDialog() == DialogResult.Cancel)
                         return;
-                    else
-                        break;
                 }
-            }            
+                catch (Exception e) { throw e; }
+            }
 
             collection.Add(uri);
             Properties.Settings.Default.Save();
