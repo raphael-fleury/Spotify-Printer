@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
+using Spotify = SpotifyPrinter.Services.Spotify;
 
 namespace SpotifyPrinter
 {
@@ -15,6 +16,8 @@ namespace SpotifyPrinter
             Application.SetCompatibleTextRenderingDefault(false);
 
             string token = Properties.Settings.Default.Token;
+
+            Spotify.TryAuthenticate(Properties.Settings.Default.Token);
             Application.Run(new MainForm());
         }
     }

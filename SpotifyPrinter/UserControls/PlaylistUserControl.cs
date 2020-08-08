@@ -2,16 +2,15 @@
 using System.Drawing;
 using System;
 using SpotifyPrinter.UserControls;
-
-using FullPlaylist = SpotifyAPI.Web.FullPlaylist;
 using SpotifyPrinter.Services;
+using SpotifyTest.Entities;
 
 namespace SpotifyPrinter
 {
     public partial class PlaylistUserControl : UserControl
     {
         #region Fields
-        public readonly FullPlaylist Playlist;
+        public readonly Playlist Playlist;
 
         private Color defaultColor;
         private Color selectedColor = Color.Turquoise;
@@ -29,7 +28,7 @@ namespace SpotifyPrinter
         }
         #endregion
 
-        public PlaylistUserControl(FullPlaylist playlist)
+        public PlaylistUserControl(Playlist playlist)
         {
             InitializeComponent();
 

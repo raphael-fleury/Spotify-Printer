@@ -1,9 +1,9 @@
-﻿using SpotifyAPI.Web;
+﻿using Newtonsoft.Json;
 using SpotifyPrinter.Services.Exceptions;
 using SpotifyPrinter.UserControls;
+using SpotifyTest.Entities;
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
@@ -13,11 +13,34 @@ namespace SpotifyPrinter.Services
     public static class Playlists
     {
         #region Properties
-        private static StringCollection collection =>
-            Properties.Settings.Default.Playlists;
+        private static string FolderPath 
+        {
+            get
+            {
+                var path = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) +
+                @"\SpotifyPrinter\Playlists\";
 
-        public static IReadOnlyList<string> Collection =>
-            collection.Cast<string>().ToList();         
+                if (!Directory.Exists(path))
+                    Directory.CreateDirectory(path);
+
+                return path;
+            }
+        }            
+
+        public static List<Playlist> List 
+        {
+            get
+            {
+                var list = new List<Playlist>();
+                foreach (string path in Directory.GetFiles(FolderPath))
+                {
+                    string uri = Path.GetFileNameWithoutExtension(path);
+                    list.Add(Get(uri, true));
+                }
+
+                return list;
+            }            
+        }
         #endregion
 
         #region Events
@@ -37,60 +60,23 @@ namespace SpotifyPrinter.Services
         }
         #endregion
 
-        public static FullPlaylist Get(string uri)
-        {
-            try { return Spotify.Client.Playlists.Get(uri).Result; }
-
-            catch (ClientNotAuthenticatedException e)
-            {
-                throw e;
-            }
-            catch
-            {
-                throw new PlaylistException("Playlist not found.");
-            }
-        }
-
-        public static List<FullPlaylist> Load()
-        {
-            var list = new List<FullPlaylist>();
-            foreach(string uri in collection)
-            {
-                while (true)
-                {
-                    try 
-                    { 
-                        list.Add(Get(uri));
-                        break;
-                    }
-                    catch (ClientNotAuthenticatedException)
-                    {
-                        var dialog = new AuthenticationForm();
-                        if (dialog.ShowDialog() == DialogResult.Cancel)
-                            return list;
-                    }
-                    catch { break; }
-                }                
-            }
-
-            return list;
-        }
-
+        #region Methods
+       
+        #region Operations
         public static void Add(string uri)
         {
             uri = uri.Replace("spotify:playlist:", "");
-
-            if (Collection.Contains(uri))
+      
+            if (IsAdded(uri))
                 throw new PlaylistException("Playlist already added.");
 
+            Playlist playlist;
             while (true)
             {
                 try
                 {
-                    if (Get(uri) == null)
-                        return;
-                    else
-                        break;
+                    playlist = Get(uri, false);
+                    break;
                 }
                 catch (ClientNotAuthenticatedException)
                 {
@@ -101,17 +87,13 @@ namespace SpotifyPrinter.Services
                 catch (Exception e) { throw e; }
             }
 
-            collection.Add(uri);
-            Properties.Settings.Default.Save();
-
+            Save(playlist);
             playlistAdded?.Invoke(uri);
         }
 
         public static void Remove(string uri)
         {
-            collection.Remove(uri);
-            Properties.Settings.Default.Save();
-
+            File.Delete(GetPath(uri));
             playlistRemoved?.Invoke(uri);
         }
 
@@ -122,7 +104,7 @@ namespace SpotifyPrinter.Services
             foreach (var playlist in PlaylistsContainer.Instance.SelectedPlaylists)
             {
                 string fileName = path + @"\" + $"{playlist.Name}.txt";
-                string content = playlist.Name + ", by: " + (playlist.Owner.DisplayName ?? playlist.Owner.Id) + "\n";
+                string content = playlist.Name + ", by: " + playlist.Owner + "\n";
 
                 #region If File Already Exists
                 if (Directory.GetFiles(path).Contains(fileName))
@@ -139,28 +121,9 @@ namespace SpotifyPrinter.Services
                 }
                 #endregion
 
-                foreach (var item in playlist.Tracks.Items)
+                foreach (var item in playlist.Tracks)
                 {
-                    FullTrack track = (FullTrack)item.Track;
-
-                    //content += track.IsLocal ? "[Local] " : $"[Uri: {track.Uri}] ";
-                    content += $"\n[Added at {item.AddedAt} by {item.AddedBy.DisplayName ?? item.AddedBy.Id}] ";
-
-                    #region Artists
-                    for (int i = 0; i < track.Artists.Count; i++)
-                    {
-                        if (!track.Name.Contains(track.Artists[i].Name))
-                        {
-                            if (i > 0)
-                                content += ", ";
-                            content += track.Artists[i].Name;
-                        }
-                    }
-                    if (track.Artists.Where(a => a.Name != "").ToArray().Length > 0)
-                        content += " - ";
-                    #endregion
-
-                    content += track.Name;
+                    content += "\n" + item;
                 }
 
                 File.WriteAllText(fileName, content);
@@ -185,5 +148,50 @@ namespace SpotifyPrinter.Services
 
             return "";
         }
+        #endregion
+
+        #region Auxiliar Methods
+        private static string GetPath(string uri) => FolderPath + uri.Replace("spotify:playlist:", "") + ".json";
+        private static  bool  IsAdded(string uri) => File.Exists(GetPath(uri));
+
+        private static Playlist Load(string uri)
+        {
+            if (!IsAdded(uri))
+                throw new PlaylistException("Playlist not added.");
+
+            using (var reader = new StreamReader(GetPath(uri)))
+            {
+                string json = reader.ReadToEnd();
+                return JsonConvert.DeserializeObject<Playlist>(json); //ERROR
+            }
+        }
+
+        private static Playlist Get(string uri, bool loadFromFilesIfNull)
+        {
+            try { return Spotify.Client.Playlists.Get(uri).Result; }
+
+            catch (ClientNotAuthenticatedException e)
+            {
+                if (!loadFromFilesIfNull)
+                    throw e;
+            }
+            catch
+            {
+                if (!IsAdded(uri) || !loadFromFilesIfNull)
+                    throw new PlaylistException("Playlist not found.");     
+            }
+
+            return Load(uri);
+        }
+
+        private static void Save(Playlist playlist)
+        {
+            string json = JsonConvert.SerializeObject(playlist, Formatting.Indented);
+            Console.WriteLine(GetPath(playlist.Uri));
+            File.WriteAllText(GetPath(playlist.Uri), json);
+        }
+        #endregion
+
+        #endregion
     }
 }

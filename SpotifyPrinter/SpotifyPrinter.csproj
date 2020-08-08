@@ -52,6 +52,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Entities\Playlist.cs" />
+    <Compile Include="Entities\PlaylistTrack.cs" />
+    <Compile Include="Entities\Track.cs" />
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="Services\Exceptions\ClientNotAuthenticatedException.cs" />
     <Compile Include="Services\Exceptions\PlaylistException.cs" />

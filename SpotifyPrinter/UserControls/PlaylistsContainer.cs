@@ -5,10 +5,9 @@ using System.Drawing;
 using System.Data;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using SpotifyAPI.Web;
 using SpotifyPrinter.Services;
+using SpotifyTest.Entities;
 
 namespace SpotifyPrinter.UserControls
 {
@@ -20,7 +19,7 @@ namespace SpotifyPrinter.UserControls
         public List<PlaylistUserControl> PlaylistControls =>
             panel.Controls.Cast<PlaylistUserControl>().ToList();
 
-        public List<FullPlaylist> SelectedPlaylists =>
+        public List<Playlist> SelectedPlaylists =>
             PlaylistControls
             .Where(c => c.IsSelected)
             .Select(c => c.Playlist)
@@ -47,7 +46,7 @@ namespace SpotifyPrinter.UserControls
             panel.Controls.Clear();
 
             List<PlaylistUserControl> controls = new List<PlaylistUserControl>();
-            foreach (var playlist in Playlists.Load())
+            foreach (var playlist in Playlists.List)
             {
                 var display = new PlaylistUserControl(playlist);
                 display.Width = panel.Width / panel.ColumnCount;
