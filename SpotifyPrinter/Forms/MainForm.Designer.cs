@@ -1,4 +1,6 @@
-﻿namespace SpotifyPrinter
+﻿using System.Threading.Tasks;
+
+namespace SpotifyPrinter
 {
     partial class MainForm
     {
@@ -45,7 +47,7 @@
             this.playlistInput.Size = new System.Drawing.Size(396, 20);
             this.playlistInput.TabIndex = 2;
             this.playlistInput.Text = "Insert playlist\'s URI here to add";
-            this.playlistInput.KeyDown += new System.Windows.Forms.KeyEventHandler(this.playlistInput_KeyDown);
+            this.playlistInput.KeyDown += (x, y) => Task.Run(() => playlistInput_KeyDown(x, y));
             // 
             // playlistsContainer
             // 
@@ -93,7 +95,6 @@
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Spotify Printer";
-            this.Load += new System.EventHandler(this.MainForm_Load);
             this.Resize += new System.EventHandler(this.MainForm_Resize);
             this.statusStrip.ResumeLayout(false);
             this.statusStrip.PerformLayout();

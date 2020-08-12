@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
 using System.Data;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using SpotifyPrinter.Services;
 using SpotifyTest.Entities;
+using System.Threading.Tasks;
 
 namespace SpotifyPrinter.UserControls
 {
@@ -34,19 +32,27 @@ namespace SpotifyPrinter.UserControls
         {
             InitializeComponent();
             Instance = this;
-            panel_Resize(this, EventArgs.Empty);
-            Playlists.PlaylistAdded += (p) => Reload();
+            
+            Playlists.PlaylistAdded += (p) => Task.Run(() => ReloadAsync());
             Playlists.PlaylistRemoved += RemovePlaylist;
+
+            Load += (x, y) => Task.Run(() => ReloadAsync());
+            Load += panel_Resize;
         }
         #endregion
 
-        #region Public Operations
-        public void Reload()
+        public int GetControlIndex(PlaylistUserControl control)
+        {
+            return panel.Controls.GetChildIndex(control);
+        }
+
+        //NOT WORKING WHEN CALLED ASYNC
+        private async Task ReloadAsync()
         {
             panel.Controls.Clear();
 
             List<PlaylistUserControl> controls = new List<PlaylistUserControl>();
-            foreach (var playlist in Playlists.List)
+            foreach (var playlist in await Playlists.GetListAsync())
             {
                 var display = new PlaylistUserControl(playlist);
                 display.Width = panel.Width / panel.ColumnCount;
@@ -55,17 +61,12 @@ namespace SpotifyPrinter.UserControls
                 display.ToggleSelect += (x, y) => controlsBoard.Reload();
 
                 controls.Add(display);
+                Console.WriteLine(display.Location.Y);
             }
 
             controls.Sort((c1, c2) => c1.CompareTo(c2));
             controls.ForEach(c => panel.Controls.Add(c));
         }
-
-        public int GetControlIndex(PlaylistUserControl control)
-        {
-            return panel.Controls.GetChildIndex(control);
-        }
-        #endregion
 
         private void RemovePlaylist(string uri)
         {

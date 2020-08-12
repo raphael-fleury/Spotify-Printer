@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace SpotifyPrinter.Services
@@ -25,21 +26,6 @@ namespace SpotifyPrinter.Services
 
                 return path;
             }
-        }            
-
-        public static List<Playlist> List 
-        {
-            get
-            {
-                var list = new List<Playlist>();
-                foreach (string path in Directory.GetFiles(FolderPath))
-                {
-                    string uri = Path.GetFileNameWithoutExtension(path);
-                    list.Add(Get(uri, true));
-                }
-
-                return list;
-            }            
         }
         #endregion
 
@@ -61,12 +47,12 @@ namespace SpotifyPrinter.Services
         #endregion
 
         #region Methods
-       
+
         #region Operations
-        public static void Add(string uri)
+        public async static Task AddAsync(string uri)
         {
             uri = uri.Replace("spotify:playlist:", "");
-      
+
             if (IsAdded(uri))
                 throw new PlaylistException("Playlist already added.");
 
@@ -75,7 +61,7 @@ namespace SpotifyPrinter.Services
             {
                 try
                 {
-                    playlist = Get(uri, false);
+                    playlist = await GetAsync(uri, false);
                     break;
                 }
                 catch (ClientNotAuthenticatedException)
@@ -95,6 +81,18 @@ namespace SpotifyPrinter.Services
         {
             File.Delete(GetPath(uri));
             playlistRemoved?.Invoke(uri);
+        }
+
+        public async static Task<List<Playlist>> GetListAsync()
+        {
+            var list = new List<Playlist>();
+            foreach (string path in Directory.GetFiles(FolderPath))
+            {
+                string uri = Path.GetFileNameWithoutExtension(path);
+                list.Add(await GetAsync(uri, true));
+            }
+
+            return list;
         }
 
         public static void SaveToTXT()
@@ -152,7 +150,7 @@ namespace SpotifyPrinter.Services
 
         #region Auxiliar Methods
         private static string GetPath(string uri) => FolderPath + uri.Replace("spotify:playlist:", "") + ".json";
-        private static  bool  IsAdded(string uri) => File.Exists(GetPath(uri));
+        private static bool IsAdded(string uri) => File.Exists(GetPath(uri));
 
         private static Playlist Load(string uri)
         {
@@ -162,13 +160,13 @@ namespace SpotifyPrinter.Services
             using (var reader = new StreamReader(GetPath(uri)))
             {
                 string json = reader.ReadToEnd();
-                return JsonConvert.DeserializeObject<Playlist>(json); //ERROR
+                return JsonConvert.DeserializeObject<Playlist>(json);
             }
         }
 
-        private static Playlist Get(string uri, bool loadFromFilesIfNull)
+        private async static Task<Playlist> GetAsync(string uri, bool loadFromFilesIfNull)
         {
-            try { return Spotify.Client.Playlists.Get(uri).Result; }
+            try { return await Spotify.Client.Playlists.Get(uri); }
 
             catch (ClientNotAuthenticatedException e)
             {
@@ -178,7 +176,7 @@ namespace SpotifyPrinter.Services
             catch
             {
                 if (!IsAdded(uri) || !loadFromFilesIfNull)
-                    throw new PlaylistException("Playlist not found.");     
+                    throw new PlaylistException("Playlist not found.");
             }
 
             return Load(uri);

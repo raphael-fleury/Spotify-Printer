@@ -1,5 +1,6 @@
 ﻿using SpotifyPrinter.Services;
 using System;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace SpotifyPrinter
@@ -8,23 +9,18 @@ namespace SpotifyPrinter
     {
         public MainForm() => InitializeComponent();
 
-        private void MainForm_Load(object sender, EventArgs e)
+        private async Task playlistInput_KeyDown(object sender, KeyEventArgs e)
         {
-            playlistsContainer.Reload();
-        }
-
-        private void playlistInput_KeyDown(object sender, KeyEventArgs e)
-        {
+            Console.WriteLine(e.KeyCode);
             if (e.KeyCode == Keys.Enter)
             {
-                try { Playlists.Add(playlistInput.Text); }
+                try { await Playlists.AddAsync(playlistInput.Text); }
 
                 catch (Exception exc)
                 {
                     statusLabel.Text = exc.Message; 
                 }
-            }
-                
+            }                
         }
 
         private void MainForm_Resize(object sender, EventArgs e)
