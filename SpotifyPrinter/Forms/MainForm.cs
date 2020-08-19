@@ -7,20 +7,26 @@ namespace SpotifyPrinter
 {
     public partial class MainForm : Form
     {
-        public MainForm() => InitializeComponent();
+        public static MainForm Instance { get; private set; }
+
+        public MainForm()
+        {
+            Instance = this;
+            InitializeComponent();
+        }
+
+        public void ShowError(Exception e)
+        {
+            statusLabel.Text = e.Message;
+        }
 
         private async Task playlistInput_KeyDown(object sender, KeyEventArgs e)
         {
-            Console.WriteLine(e.KeyCode);
             if (e.KeyCode == Keys.Enter)
             {
                 try { await Playlists.AddAsync(playlistInput.Text); }
-
-                catch (Exception exc)
-                {
-                    statusLabel.Text = exc.Message; 
-                }
-            }                
+                catch (Exception exc) { ShowError(exc); }
+            }
         }
 
         private void MainForm_Resize(object sender, EventArgs e)

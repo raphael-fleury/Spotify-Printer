@@ -9,7 +9,7 @@ namespace SpotifyPrinter.Services
         #region Properties
         private static SpotifyClient client;
 
-        public static SpotifyClient Client
+        public static SpotifyClient Client 
         { 
             get
             {

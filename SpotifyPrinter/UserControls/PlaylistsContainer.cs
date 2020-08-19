@@ -36,7 +36,8 @@ namespace SpotifyPrinter.UserControls
             Playlists.PlaylistAdded += (p) => Task.Run(() => ReloadAsync());
             Playlists.PlaylistRemoved += RemovePlaylist;
 
-            Load += (x, y) => Task.Run(() => ReloadAsync());
+            Load += (x, y) => ReloadAsync();
+            Load += (x, y) => Task.Run(() => ReloadAsync());            
             Load += panel_Resize;
         }
         #endregion

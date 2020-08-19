@@ -49,6 +49,23 @@ namespace SpotifyPrinter.Services
         #region Methods
 
         #region Operations
+        public static string ToJSON(Playlist playlist)
+        {
+            return JsonConvert.SerializeObject(playlist, Formatting.Indented);
+        }
+
+        public static string ToTXT(Playlist playlist)
+        {
+            string content = playlist.Name + ", by: " + playlist.Owner + "\n";
+
+            foreach (var item in playlist.Tracks)
+            {
+                content += "\n" + item;
+            }
+
+            return content;
+        }
+
         public async static Task AddAsync(string uri)
         {
             uri = uri.Replace("spotify:playlist:", "");
@@ -95,14 +112,16 @@ namespace SpotifyPrinter.Services
             return list;
         }
 
-        public static void SaveToTXT()
+        public static void SaveSelected(Func<Playlist, string> convert, string format)
         {
             string path = Properties.Settings.Default.Folder;
 
+            if (string.IsNullOrEmpty(path))
+                throw new NullReferenceException("You have to choose a folder to save the playlists.");
+
             foreach (var playlist in PlaylistsContainer.Instance.SelectedPlaylists)
             {
-                string fileName = path + @"\" + $"{playlist.Name}.txt";
-                string content = playlist.Name + ", by: " + playlist.Owner + "\n";
+                string fileName = path + @"\" + playlist.Name + format;
 
                 #region If File Already Exists
                 if (Directory.GetFiles(path).Contains(fileName))
@@ -119,12 +138,7 @@ namespace SpotifyPrinter.Services
                 }
                 #endregion
 
-                foreach (var item in playlist.Tracks)
-                {
-                    content += "\n" + item;
-                }
-
-                File.WriteAllText(fileName, content);
+                Save(playlist, fileName, convert);
             }
         }
 
@@ -144,7 +158,7 @@ namespace SpotifyPrinter.Services
                 }
             }
 
-            return "";
+            return Properties.Settings.Default.Folder;
         }
         #endregion
 
@@ -184,9 +198,12 @@ namespace SpotifyPrinter.Services
 
         private static void Save(Playlist playlist)
         {
-            string json = JsonConvert.SerializeObject(playlist, Formatting.Indented);
-            Console.WriteLine(GetPath(playlist.Uri));
-            File.WriteAllText(GetPath(playlist.Uri), json);
+            Save(playlist, GetPath(playlist.Uri), ToJSON);
+        }
+
+        private static void Save(Playlist playlist, string path, Func<Playlist, string> convert)
+        {
+            File.WriteAllText(path, convert(playlist));
         }
         #endregion
 
